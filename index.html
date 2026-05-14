@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fishtail Tours and Travels | Welcome to Nepal</title>
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-bright: #ffd700;
+            --deep-blue: #020617;
+            --mist: rgba(255, 255, 255, 0.15);
+            --accent-red: #991b1b;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(212, 175, 55, 0.3);
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+        body { background: var(--deep-blue); color: #fff; font-family: var(--font-main); overflow-x: hidden; line-height: 1.6; }
+        ::-webkit-scrollbar { width: 0px; }
+
+        /* --- SYSTEM: INTERACTION ENGINE (CURSOR) --- */
+        #custom-cursor {
+            position: fixed; top: 0; left: 0; width: 40px; height: 40px;
+            border: 1px solid var(--gold); border-radius: 50%; pointer-events: none;
+            z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s ease-out, width 0.3s, height 0.3s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #cursor-dot { width: 4px; height: 4px; background: var(--gold); border-radius: 50%; }
+
+        /* --- SYSTEM: ENVIRONMENT ENGINE (SNOW & FOG) --- */
+        .fog-layer {
+            position: fixed; top: 0; left: 0; width: 200%; height: 100%;
+            background: linear-gradient(90deg, transparent, var(--mist), transparent);
+            filter: blur(50px); pointer-events: none; z-index: 5; opacity: 0.4;
+            animation: drift 20s linear infinite;
+        }
+        @keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        .snow-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+        .flake { position: absolute; background: #fff; border-radius: 50%; opacity: 0.8; animation: fall linear infinite; }
+        @keyframes fall { to { transform: translateY(100vh) translateX(20px); } }
+
+        /* --- SYSTEM: PARALLAX ENGINE (HERO) --- */
+        .hero {
+            height: 100vh; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+        }
+        .parallax-layer { position: absolute; bottom: 0; left: -10%; width: 120%; height: 110%; will-change: transform; }
+        .sky { background: linear-gradient(to top, #1e293b, #020617); z-index: 1; }
+        .mountains-back {
+            z-index: 2; clip-path: polygon(0% 100%, 20% 40%, 35% 70%, 50% 20%, 65% 60%, 80% 30%, 100% 100%);
+            background: linear-gradient(to bottom, #334155, #0f172a);
+        }
+        .mountains-mid {
+            z-index: 3; clip-path: polygon(0% 100%, 10% 70%, 30% 40%, 50% 80%, 70% 30%, 90% 60%, 100% 100%);
+            background: linear-gradient(to bottom, #475569, #1e293b);
+        }
+        .mountains-front {
+            z-index: 4; clip-path: polygon(0% 100%, 15% 85%, 40% 60%, 60% 90%, 85% 55%, 100% 100%);
+            background: linear-gradient(to bottom, #64748b, #334155);
+        }
+        .hero-sun {
+            position: absolute; top: 40%; left: 50%; width: 150px; height: 150px;
+            background: radial-gradient(circle, var(--gold-bright), transparent 70%);
+            border-radius: 50%; transform: translate(-50%, -50%); z-index: 1.5;
+            box-shadow: 0 0 100px var(--gold); opacity: 0; animation: sunrise 4s ease-out forwards;
+        }
+        @keyframes sunrise { to { opacity: 1; transform: translate(-50%, -80%); } }
+
+        /* --- HERO TEXT ANIMATIONS --- */
+        .hero-content { z-index: 10; position: relative; padding: 0 20px; }
+        .welcome-text {
+            font-size: 1rem; letter-spacing: 10px; text-transform: uppercase; color: var(--gold);
+            opacity: 0; transform: translateY(20px); animation: fadeInUp 1s forwards 0.5s;
+        }
+        .main-title {
+            font-size: clamp(2.5rem, 8vw, 6rem); font-weight: 900; line-height: 1.1; margin: 20px 0;
+            background: linear-gradient(to bottom, #fff, #94a3b8); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; text-transform: uppercase;
+            opacity: 0; transform: scale(0.9); animation: zoomIn 1.5s forwards 0.8s;
+        }
+        .subtitle {
+            font-size: 1.1rem; color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto 40px;
+            opacity: 0; animation: fadeIn 1s forwards 1.2s;
+        }
+
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes zoomIn { to { opacity: 1; transform: scale(1); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        /* --- SYSTEM: UI MOTION SYSTEM (BUTTONS) --- */
+        .btn-group { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .cta {
+            padding: 16px 32px; border: 1px solid var(--gold); color: #fff; text-decoration: none;
+            text-transform: uppercase; letter-spacing: 2px; font-weight: bold; position: relative;
+            overflow: hidden; transition: all 0.4s; background: transparent;
+        }
+        .cta::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: var(--gold); transition: left 0.4s cubic-bezier(0.7, 0, 0.3, 1); z-index: -1;
+        }
+        .cta:hover::before { left: 0; }
+        .cta:hover { color: var(--deep-blue); transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.2); }
+
+        /* --- SECTION GENERIC --- */
+        section { padding: 100px 10%; position: relative; z-index: 10; background: var(--deep-blue); }
+        .section-header { margin-bottom: 60px; text-align: center; }
+        .section-header h2 { font-size: 2.5rem; text-transform: uppercase; letter-spacing: 5px; color: var(--gold); margin-bottom: 10px; }
+        .section-header p { color: rgba(255,255,255,0.5); }
+
+        /* --- SYSTEM: JOURNEY ENGINE (MAP) --- */
+        .map-section { background: #01040a; overflow: hidden; padding-bottom: 200px; }
+        .map-container {
+            position: relative; height: 400px; width: 100%; max-width: 1000px; margin: 0 auto;
+            border: 1px solid var(--border); border-radius: 20px; background: rgba(255,255,255,0.01);
+        }
+        .trek-path {
+            position: absolute; top: 50%; left: 10%; width: 80%; height: 2px;
+            background: rgba(255,255,255,0.1); transform: translateY(-50%);
+        }
+        .path-progress {
+            position: absolute; top: 0; left: 0; height: 100%; width: 0%;
+            background: var(--gold); box-shadow: 0 0 15px var(--gold); transition: width 0.1s linear;
+        }
+        .marker {
+            position: absolute; top: 50%; transform: translate(-50%, -50%);
+            width: 12px; height: 12px; background: #fff; border-radius: 50%; border: 2px solid var(--gold);
+            z-index: 15; transition: all 0.3s;
+        }
+        .marker.active { background: var(--gold); box-shadow: 0 0 20px var(--gold); transform: translate(-50%, -50%) scale(1.5); }
+        .marker-label {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            white-space: nowrap; font-size: 0.8rem; color: var(--gold); opacity: 0; transition: 0.3s;
+        }
+        .marker.active .marker-label { opacity: 1; bottom: 30px; }
+
+        /* --- SYSTEM: INTERACTION ENGINE (CARDS) --- */
+        .tour-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .tour-card {
+            background: var(--glass); border: 1px solid rgba(255,255,255,0.05); padding: 40px;
+            border-radius: 4px; transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
+            min-height: 320px;
+        }
+        .tour-card:hover {
+            border-color: var(--gold); transform: translateY(-10px) rotateX(5deg);
+            background: rgba(255, 255, 255, 0.05); box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .tour-card h3 { color: var(--gold); margin-bottom: 15px; font-size: 1.3rem; text-transform: uppercase; }
+        .tour-card .duration { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-bottom: 20px; display: block; }
+        .tour-card .badge {
+            position: absolute; top: 10px; right: 10px; background: var(--accent-red);
+            color: #fff; padding: 4px 10px; font-size: 0.6rem; font-weight: bold; text-transform: uppercase;
+        }
+
+        /* --- SYSTEM: SCROLL STORY ENGINE (ALTIMETER) --- */
+        .altimeter {
+            position: fixed; right: 40px; top: 50%; transform: translateY(-50%); z-index: 1000;
+            display: flex; flex-direction: column; align-items: center; mix-blend-mode: difference;
+        }
+        .alt-line { width: 2px; height: 150px; background: rgba(255,255,255,0.2); position: relative; }
+        .alt-pointer {
+            position: absolute; top: 0; left: -4px; width: 10px; height: 10px;
+            background: var(--gold); border-radius: 50%; box-shadow: 0 0 10px var(--gold);
+        }
+        .alt-value { font-family: monospace; font-size: 0.8rem; color: var(--gold); margin-top: 10px; }
+
+        /* --- SYSTEM: UI MOTION SYSTEM (FORM) --- */
+        .contact-container { max-width: 800px; margin: 0 auto; background: var(--glass); padding: 40px; border: 1px solid var(--border); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        input, textarea, select {
+            width: 100%; padding: 15px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; outline: none; transition: 0.3s; font-size: 1rem;
+        }
+        input:focus, textarea:focus { border-color: var(--gold); background: rgba(255,255,255,0.05); }
+
+        /* --- FOOTER & ENVIRONMENT (CAMPFIRE) --- */
+        footer { padding: 80px 10% 40px; background: #000; text-align: center; border-top: 1px solid var(--border); position: relative; }
+        .fire-container { width: 50px; height: 50px; margin: 0 auto 30px; position: relative; }
+        .fire-flame {
+            position: absolute; bottom: 0; left: 50%; width: 20px; height: 20px;
+            background: orange; border-radius: 50% 0 50% 50%; transform: rotate(-45deg) translate(-50%, -50%);
+            filter: blur(5px); animation: flicker 0.1s infinite alternate;
+        }
+        @keyframes flicker { to { opacity: 0.7; transform: rotate(-45deg) translate(-50%, -50%) scale(1.2); } }
+
+        /* --- REVEAL ANIMATIONS --- */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 1s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .section-header h2 { font-size: 2rem; }
+            .altimeter { display: none; }
+            section { padding: 60px 5%; }
+            .contact-container { padding: 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="custom-cursor"><div id="cursor-dot"></div></div>
+    <div class="fog-layer"></div>
+    <div class="snow-container" id="snow"></div>
+
+    <div class="altimeter">
+        <div class="alt-line"><div class="alt-pointer" id="alt-pointer"></div></div>
+        <div class="alt-value"><span id="altitude">1400</span>M</div>
+    </div>
+
+    <section class="hero" id="home">
+        <div class="hero-sun"></div>
+        <div class="parallax-layer sky" data-speed="0.1"></div>
+        <div class="parallax-layer mountains-back" data-speed="0.3"></div>
+        <div class="parallax-layer mountains-mid" data-speed="0.5"></div>
+        <div class="parallax-layer mountains-front" data-speed="0.8"></div>
+        
+        <div class="hero-content">
+            <p class="welcome-text">Established 1990</p>
+            <h1 class="main-title">Welcome to Nepal</h1>
+            <p class="subtitle">Fishtail Tours and Travels Pvt. Ltd.<br>“Your one-stop travel service provider since 1990”</p>
+            <div class="btn-group">
+                <a href="#tours" class="cta">Explore Tours</a>
+                <a href="#contact" class="cta">Book Now</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="intro">
+        <div class="reveal">
+            <div class="section-header">
+                <h2>Our Story</h2>
+                <p>Leading Nepal's Tourism Since 1990</p>
+            </div>
+            <p style="text-align: center; max-width: 800px; margin: 0 auto; font-size: 1.1rem; color: #cbd5e1;">
+                Fishtail Tours & Travels Pvt. Ltd. is your one-stop travel service provider, bringing the world to you at your convenience. Since its establishment in 1990, Fishtail Tours & Travels has positioned itself at the forefront of the tourism and hospitality industry by offering the widest coverage of local and international destinations at affordable prices making itself one of the best travel agencies of Nepal.
+            </p>
+        </div>
+    </section>
+
+    <section class="map-section">
+        <div class="section-header reveal">
+            <h2>Journey Through Nepal</h2>
+            <p>From Kathmandu to the Roof of the World</p>
+        </div>
+        <div class="map-container reveal">
+            <div class="trek-path"><div class="path-progress" id="map-progress"></div></div>
+            <div class="marker" style="left: 10%;" id="mark-1"><span class="marker-label">Kathmandu</span></div>
+            <div class="marker" style="left: 40%;" id="mark-2"><span class="marker-label">Pokhara</span></div>
+            <div class="marker" style="left: 70%;" id="mark-3"><span class="marker-label">Annapurna</span></div>
+            <div class="marker" style="left: 90%;" id="mark-4"><span class="marker-label">Everest Base Camp</span></div>
+        </div>
+    </section>
+
+    <section id="tours">
+        <div class="section-header reveal">
+            <h2>Featured Tours</h2>
+            <p>Hand-picked experiences across the Himalayas</p>
+        </div>
+        <div class="tour-grid">
+            <div class="tour-card reveal">
+                <span class="badge">Cultural</span>
+                <div>
+                    <span class="duration">12 Nights - 13 Days</span>
+                    <h3>Explore Nepal Cultural Tour (SARANGI)</h3>
+                </div>
+                <a href="#" class="cta">Discover More</a>
+            </div>
+            <div class="tour-card reveal">
+                <span class="badge">Nature</span>
+                <div>
+                    <span class="duration">10 Nights - 11 Days</span>
+                    <h3>Nature Paradise Cultural Tour (SANAI)</h3>
+                </div>
+                <a href="#" class="cta">Discover More</a>
+            </div>
+            <div class="tour-card reveal">
+                <span class="badge">Popular</span>
+                <div>
+                    <span class="duration">4 Nights - 5 Days</span>
+                    <h3>Glimpses of Nepal (TYAMKO)</h3>
+                </div>
+                <a href="#" class="cta">Discover More</a>
+            </div>
+            <div class="tour-card reveal">
+                <span class="badge">Spiritual</span>
+                <div>
+                    <span class="duration">7 Nights - 8 Days</span>
+                    <h3>Buddhist Pilgrimage Tour</h3>
+                </div>
+                <a href="#" class="cta">Discover More</a>
+            </div>
+            <div class="tour-card reveal">
+                <span class="badge">Romance</span>
+                <div>
+                    <span class="duration">8 Nights - 9 Days</span>
+                    <h3>Heavenly Honeymoon</h3>
+                </div>
+                <a href="#" class="cta">Discover More</a>
+            </div>
+            <div class="tour-card reveal">
+                <span class="badge">Sacred</span>
+                <div>
+                    <span class="duration">3 Nights - 4 Days</span>
+                    <h3>Pashupatinath Temple Tour</h3>
+                </div>
+                <a href="#" class="cta">Discover More</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="pilgrimage" style="background: #000;">
+        <div class="section-header reveal">
+            <h2 style="color: #fff;">Pilgrimage Tours</h2>
+            <p>The Sacred Journey to Mount Kailash</p>
+        </div>
+        <div class="tour-grid">
+            <div class="tour-card reveal" style="border-color: var(--gold);">
+                <h3>Mount Kailash Fixed Departure</h3>
+                <p>The ultimate spiritual trek around the holy peak.</p>
+                <a href="#" class="cta">View Schedule</a>
+            </div>
+            <div class="tour-card reveal">
+                <h3>Kailash Overland via Kyrung</h3>
+                <p>Scenic route through the Tibetan plateau.</p>
+                <a href="#" class="cta">Explore</a>
+            </div>
+            <div class="tour-card reveal">
+                <h3>Mt Kailash Heli Tours</h3>
+                <p>Premium experience via Hilsa for comfort and speed.</p>
+                <a href="#" class="cta">View Tour</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="section-header reveal">
+            <h2>Contact Us</h2>
+            <p>Let's plan your Himalayan adventure</p>
+        </div>
+        <div class="contact-container reveal">
+            <form id="tourForm">
+                <div class="form-row">
+                    <input type="text" placeholder="Full Name" required>
+                    <input type="email" placeholder="Email Address" required>
+                </div>
+                <div class="form-row">
+                    <select required>
+                        <option value="">Select Destination</option>
+                        <option>Mount Kailash</option>
+                        <option>Everest Base Camp</option>
+                        <option>Annapurna Circuit</option>
+                        <option>Cultural Tours</option>
+                    </select>
+                    <input type="text" placeholder="Phone Number">
+                </div>
+                <textarea rows="5" placeholder="Your Message / Requirements" required style="margin-bottom: 20px;"></textarea>
+                <button type="submit" class="cta" style="width: 100%; cursor: pointer;">Initialize Journey</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="fire-container"><div class="fire-flame"></div></div>
+        <h3 style="color: var(--gold); letter-spacing: 5px; margin-bottom: 10px;">FISHTAIL TOURS & TRAVELS PVT. LTD.</h3>
+        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.4);">Kathmandu, Nepal | Established 1990</p>
+        <div style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 20px; font-size: 0.7rem;">
+            &copy; 2026 Fishtail Tours and Travels. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        /* --- INTERACTION ENGINE --- */
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        /* --- ENVIRONMENT ENGINE (SNOW) --- */
+        const snowContainer = document.getElementById('snow');
+        for (let i = 0; i < 40; i++) {
+            const flake = document.createElement('div');
+            flake.className = 'flake';
+            const size = Math.random() * 3 + 2;
+            flake.style.width = `${size}px`;
+            flake.style.height = `${size}px`;
+            flake.style.left = `${Math.random() * 100}vw`;
+            flake.style.animationDuration = `${Math.random() * 3 + 4}s`;
+            flake.style.animationDelay = `${Math.random() * 5}s`;
+            snowContainer.appendChild(flake);
+        }
+
+        /* --- PARALLAX & SCROLL LOGIC --- */
+        const layers = document.querySelectorAll('.parallax-layer');
+        const reveals = document.querySelectorAll('.reveal');
+        const altPointer = document.getElementById('alt-pointer');
+        const altValue = document.getElementById('altitude');
+        const mapProgress = document.getElementById('map-progress');
+        const markers = document.querySelectorAll('.marker');
+
+        window.addEventListener('scroll', () => {
+            const scrollY = window.scrollY;
+            const scrollPercent = (scrollY / (document.body.scrollHeight - window.innerHeight));
+
+            layers.forEach(layer => {
+                const speed = layer.getAttribute('data-speed');
+                layer.style.transform = `translateY(${scrollY * speed}px)`;
+            });
+
+            reveals.forEach(reveal => {
+                const revealTop = reveal.getBoundingClientRect().top;
+                if (revealTop < window.innerHeight * 0.85) reveal.classList.add('active');
+            });
+
+            altPointer.style.top = `${scrollPercent * 100}%`;
+            altValue.innerText = Math.floor(1400 + (scrollPercent * 7448));
+
+            mapProgress.style.width = `${scrollPercent * 100}%`;
+            markers.forEach((marker) => {
+                const markerPos = parseInt(marker.style.left) / 100;
+                if (scrollPercent >= markerPos) marker.classList.add('active');
+                else marker.classList.remove('active');
+            });
+        });
+
+        document.querySelectorAll('.cta, .tour-card').forEach(item => {
+            item.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%, -50%) scale(1.5)'; });
+            item.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%, -50%) scale(1)'; });
+        });
+
+        document.getElementById('tourForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerText = "JOURNEY INITIALIZED...";
+            setTimeout(() => {
+                alert("Namaste! Our experts will contact you shortly.");
+                e.target.reset();
+                btn.innerText = "INITIALIZE JOURNEY";
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
